@@ -1,5 +1,5 @@
 import Hero from '@/components/Hero'
-import About from '@/components/About'
+import FuturePreparation from '@/components/FuturePreparation'
 import Approach from '@/components/Approach'
 import Skills from '@/components/Skills'
 import Patterns from '@/components/Patterns'
@@ -10,7 +10,7 @@ export default function Home() {
     <main className="min-h-screen bg-white">
       <Navbar />
       <Hero />
-      <About />
+      <FuturePreparation />
       <Approach />
       <Skills />
       <Patterns />
