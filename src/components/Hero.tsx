@@ -1,6 +1,6 @@
 'use client'
+import React, { useEffect, useRef } from 'react'
 import { FaAngleDown } from 'react-icons/fa'
-import { useEffect, useRef } from 'react'
 
 const Hero = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -99,6 +99,13 @@ const Hero = () => {
     }
   }, [])
 
+  const scrollToNextSection = () => {
+    const nextSection = document.getElementById('future-preparation')
+    if (nextSection) {
+      nextSection.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   return (
     <div className="relative h-screen flex items-center justify-center overflow-hidden">
       <canvas
@@ -116,9 +123,13 @@ const Hero = () => {
         </p>
       </div>
       
-      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <button 
+        onClick={scrollToNextSection}
+        className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer focus:outline-none"
+        aria-label="Scroll to next section"
+      >
         <FaAngleDown className="text-white text-3xl drop-shadow-lg" />
-      </div>
+      </button>
     </div>
   )
 }

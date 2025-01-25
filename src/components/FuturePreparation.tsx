@@ -1,8 +1,9 @@
 'use client'
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const FuturePreparation: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -19,13 +20,21 @@ const FuturePreparation: React.FC = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    let progress = 0;
-    const animationDuration = 5000; // 5 seconds
-    const startTime = Date.now();
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
 
-    const animate = () => {
-      const currentTime = Date.now();
-      progress = Math.min((currentTime - startTime) / animationDuration, 1);
+    observer.observe(canvas);
+
+    let animationFrameId: number;
+    let startTime: number | null = null;
+
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / 5000, 1);
 
       // Clear canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -35,48 +44,61 @@ const FuturePreparation: React.FC = () => {
       ctx.strokeStyle = 'rgba(37, 99, 235, 0.4)';
       ctx.lineWidth = 4;
 
+      // Calculate points for the full curve
       const points = [];
-      for (let x = 0; x <= canvas.width * 0.9; x += 2) { // Reduce to 90% of width
-        // Using higher power function for even steeper curve
-        const normalizedX = x / (canvas.width * 0.9);
-        const exponentialY = Math.pow(normalizedX, 12); // Increased power for steeper curve
-        const y = canvas.height * 0.9 - (exponentialY * canvas.height * 0.9 * progress);
-        points.push({ x, y: y + canvas.height * 0.1 }); // Start 10% from the bottom
+      const visibleLength = canvas.width * progress;
+      
+      for (let x = 0; x <= canvas.width; x += 2) {
+        if (x > visibleLength) break;
+        
+        const normalizedX = x / canvas.width;
+        // Blend linear and exponential for smoother start
+        const blend = Math.pow(normalizedX, 15); // Increased power for steeper end
+        const y = canvas.height - (blend * canvas.height * 0.95);
+        points.push({ x, y });
       }
 
-      // Draw the curve
-      ctx.moveTo(points[0].x, points[0].y);
-      points.forEach((point) => {
-        ctx.lineTo(point.x, point.y);
-      });
+      // Draw visible portion of the curve
+      if (points.length > 0) {
+        ctx.moveTo(points[0].x, points[0].y);
+        points.forEach((point) => {
+          ctx.lineTo(point.x, point.y);
+        });
+        ctx.stroke();
 
-      ctx.stroke();
-
-      // Add gradient effect
-      const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-      gradient.addColorStop(0, 'rgba(37, 99, 235, 0.05)');
-      gradient.addColorStop(1, 'rgba(37, 99, 235, 0.15)');
-      
-      ctx.fillStyle = gradient;
-      ctx.lineTo(canvas.width * 0.9, canvas.height);
-      ctx.lineTo(0, canvas.height);
-      ctx.closePath();
-      ctx.fill();
+        // Add gradient fill
+        if (points.length > 1) {
+          const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+          gradient.addColorStop(0, 'rgba(37, 99, 235, 0.05)');
+          gradient.addColorStop(1, 'rgba(37, 99, 235, 0.15)');
+          
+          ctx.lineTo(points[points.length - 1].x, canvas.height);
+          ctx.lineTo(points[0].x, canvas.height);
+          ctx.closePath();
+          ctx.fillStyle = gradient;
+          ctx.fill();
+        }
+      }
 
       if (progress < 1) {
-        requestAnimationFrame(animate);
+        animationFrameId = requestAnimationFrame(animate);
       }
     };
 
-    animate();
+    if (isInView) {
+      startTime = null;
+      animationFrameId = requestAnimationFrame(animate);
+    }
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
+      observer.disconnect();
+      cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [isInView]);
 
   return (
-    <section className="py-24 bg-white relative overflow-hidden">
+    <section id="future-preparation" className="py-24 bg-white relative overflow-hidden">
       <canvas 
         ref={canvasRef} 
         className="absolute inset-0 w-full h-full"
