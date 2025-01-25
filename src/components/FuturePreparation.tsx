@@ -36,12 +36,12 @@ const FuturePreparation: React.FC = () => {
       ctx.lineWidth = 4;
 
       const points = [];
-      for (let x = 0; x <= canvas.width; x += 2) {
+      for (let x = 0; x <= canvas.width * 0.9; x += 2) { // Reduce to 90% of width
         // Using higher power function for even steeper curve
-        const normalizedX = x / canvas.width;
-        const exponentialY = Math.pow(normalizedX, 8); // Increased power for steeper curve
-        const y = canvas.height - (exponentialY * canvas.height * progress);
-        points.push({ x, y });
+        const normalizedX = x / (canvas.width * 0.9);
+        const exponentialY = Math.pow(normalizedX, 12); // Increased power for steeper curve
+        const y = canvas.height * 0.9 - (exponentialY * canvas.height * 0.9 * progress);
+        points.push({ x, y: y + canvas.height * 0.1 }); // Start 10% from the bottom
       }
 
       // Draw the curve
@@ -58,7 +58,7 @@ const FuturePreparation: React.FC = () => {
       gradient.addColorStop(1, 'rgba(37, 99, 235, 0.15)');
       
       ctx.fillStyle = gradient;
-      ctx.lineTo(canvas.width, canvas.height);
+      ctx.lineTo(canvas.width * 0.9, canvas.height);
       ctx.lineTo(0, canvas.height);
       ctx.closePath();
       ctx.fill();
@@ -76,7 +76,7 @@ const FuturePreparation: React.FC = () => {
   }, []);
 
   return (
-    <section className="py-24 bg-white relative">
+    <section className="py-24 bg-white relative overflow-hidden">
       <canvas 
         ref={canvasRef} 
         className="absolute inset-0 w-full h-full"
@@ -87,7 +87,7 @@ const FuturePreparation: React.FC = () => {
         </h2>
         <div className="flex flex-col md:flex-row">
           <div className="md:w-1/2">
-            <div className="space-y-8 text-justify backdrop-blur-sm">
+            <div className="space-y-8 text-justify">
               <p className="text-lg leading-relaxed text-gray-700">
                 We are at the cusp of transformational change in human civilization 
                 due to AI. Our children will live in a vastly different world, requiring 
