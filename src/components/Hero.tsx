@@ -88,19 +88,6 @@ const Hero = () => {
         ctx.stroke()
       }
 
-      // Draw mathematical curves
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)'
-      ctx.beginPath()
-      for (let x = 0; x < canvas.width; x += 5) {
-        const y = Math.sin(x * 0.02 + time) * 50 + canvas.height / 2
-        if (x === 0) {
-          ctx.moveTo(x, y)
-        } else {
-          ctx.lineTo(x, y)
-        }
-      }
-      ctx.stroke()
-
       time += 0.001
       requestAnimationFrame(animate)
     }
