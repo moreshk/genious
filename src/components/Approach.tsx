@@ -1,5 +1,5 @@
 'use client'
-import { FaLightbulb, FaGraduationCap, FaPuzzlePiece } from 'react-icons/fa'
+import { FaLightbulb, FaFlask, FaProjectDiagram } from 'react-icons/fa'
 import { useInView } from 'react-intersection-observer'
 
 const Approach = () => {
@@ -10,8 +10,8 @@ const Approach = () => {
 
   const approaches = [
     { Icon: FaLightbulb, title: "Pattern Recognition", description: "We teach children to identify and understand patterns that repeat across different domains." },
-    { Icon: FaGraduationCap, title: "Application First", description: "We start with real-world applications before diving into theoretical concepts." },
-    { Icon: FaPuzzlePiece, title: "Critical Thinking", description: "Developing problem-solving skills through hands-on experience and practical challenges." },
+    { Icon: FaFlask, title: "Application First", description: "We start with real-world applications before diving into theoretical concepts." },
+    { Icon: FaProjectDiagram, title: "Critical Thinking", description: "Develop a deeper understanding of concepts by seeing them in action first and then connect the dots to apply them in a different context." }
   ]
 
   return (

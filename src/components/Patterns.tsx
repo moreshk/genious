@@ -1,5 +1,5 @@
 'use client'
-import { FaChartLine, FaCode, FaDna } from 'react-icons/fa'
+import { FaCode, FaDna, FaPuzzlePiece } from 'react-icons/fa'
 import { useInView } from 'react-intersection-observer'
 
 const Patterns = () => {
@@ -9,8 +9,8 @@ const Patterns = () => {
   })
 
   const patterns = [
-    { Icon: FaChartLine, title: "Market Patterns", description: "Understanding market trends and cycles" },
-    { Icon: FaCode, title: "Logical Patterns", description: "Recognizing sequences and algorithms" },
+    { Icon: FaPuzzlePiece, title: "Puzzle Patterns", description: "Solving puzzles and finding hidden connections" },
+    { Icon: FaCode, title: "Logical Patterns", description: "Recognizing sequences and simple algorithms" },
     { Icon: FaDna, title: "Natural Patterns", description: "Discovering patterns in nature and science" }
   ]
 
