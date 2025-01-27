@@ -4,6 +4,8 @@ import React, { useEffect, useRef, useState } from 'react';
 const FuturePreparation: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isInView, setIsInView] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -97,6 +99,21 @@ const FuturePreparation: React.FC = () => {
     };
   }, [isInView]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const firstHalf = `We are at the cusp of transformational change in human civilization due to AI. Our children will live in a vastly different world, requiring new adaptations and skills that will remain valuable regardless of technological change.`;
+
+  const secondHalf = `Our approach focuses on timeless skills: mathematics, critical thinking, problem-solving, persuasion, public speaking, and hands-on building. These skills form the foundation of all sciences and will be crucial in an AI-driven future.
+
+  By teaching pattern recognition and application-first learning, we prepare children to adapt to rapid changes and position themselves for success in an ever-evolving world.`;
+
   return (
     <section id="future-preparation" className="py-24 bg-white relative overflow-hidden">
       <canvas 
@@ -107,28 +124,25 @@ const FuturePreparation: React.FC = () => {
         <h2 className="text-4xl font-bold text-center mb-16 text-gray-900">
           Preparing for the Future
         </h2>
-        <div className="flex flex-col md:flex-row">
-          <div className="md:w-1/2">
-            <div className="space-y-8 text-justify">
-              <p className="text-lg leading-relaxed text-gray-700">
-                We are at the cusp of transformational change in human civilization 
-                due to AI. Our children will live in a vastly different world, requiring 
-                new adaptations and skills that will remain valuable regardless of 
-                technological change.
-              </p>
-              <p className="text-lg leading-relaxed text-gray-700">
-                Our approach focuses on timeless skills: mathematics, critical 
-                thinking, problem-solving, persuasion, public speaking, and hands-on 
-                building. These skills form the foundation of all sciences and will 
-                be crucial in an AI-driven future.
-              </p>
-              <p className="text-lg leading-relaxed text-gray-700">
-                By teaching pattern recognition and application-first learning, we 
-                prepare children to adapt to rapid changes and position themselves 
-                for success in an ever-evolving world.
-              </p>
-            </div>
+        <div className="prose mx-auto max-w-3xl">
+          <p className="text-lg text-gray-700 mb-4">
+            {firstHalf}
+          </p>
+          <div 
+            className={`text-lg text-gray-700 ${
+              isMobile && !isExpanded ? 'hidden' : ''
+            }`}
+          >
+            {secondHalf}
           </div>
+          {isMobile && (
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-blue-600 font-semibold hover:text-blue-800 transition-colors mt-2"
+            >
+              {isExpanded ? 'Show Less' : 'Read More'}
+            </button>
+          )}
         </div>
       </div>
     </section>
